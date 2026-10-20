@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pixel BG — Gerador de background pixelado</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <header class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div>
+        <h1>Pixel BG</h1>
+        <p>Gerador de background pixelado</p>
+      </div>
+    </header>
+
+    <details class="section" open>
+      <summary>Presets</summary>
+      <div class="preset-grid" id="presetList"></div>
+      <div class="row">
+        <button type="button" class="btn btn-accent" id="surpriseBtn">Surpreenda-me</button>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>Tela</summary>
+      <label class="field">
+        <span>Resolução</span>
+        <select id="resolutionPreset">
+          <option value="1920x1080">Full HD — 1920 × 1080</option>
+          <option value="2560x1440">QHD — 2560 × 1440</option>
+          <option value="3840x2160">4K — 3840 × 2160</option>
+          <option value="1080x1920">Story — 1080 × 1920</option>
+          <option value="1080x1080">Quadrado — 1080 × 1080</option>
+          <option value="1200x630">Open Graph — 1200 × 630</option>
+          <option value="1500x500">Banner — 1500 × 500</option>
+          <option value="custom">Personalizado</option>
+        </select>
+      </label>
+      <div class="row two">
+        <label class="field">
+          <span>Largura (px)</span>
+          <input type="number" data-key="width" min="16" max="7680" step="1" />
+        </label>
+        <label class="field">
+          <span>Altura (px)</span>
+          <input type="number" data-key="height" min="16" max="7680" step="1" />
+        </label>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>Grade</summary>
+      <label class="field">
+        <span>Tamanho do pixel <output data-for="cellSize"></output></span>
+        <input type="range" data-key="cellSize" min="2" max="160" step="1" />
+      </label>
+      <label class="field">
+        <span>Espaçamento entre pixels <output data-for="gap"></output></span>
+        <input type="range" data-key="gap" min="0" max="24" step="1" />
+      </label>
+      <label class="field" data-show-if="gap">
+        <span>Visibilidade da grade <output data-for="gridOpacity"></output></span>
+        <input type="range" data-key="gridOpacity" min="0" max="100" step="1" />
+      </label>
+      <label class="field">
+        <span>Forma do pixel</span>
+        <select data-key="shape">
+          <option value="square">Quadrado</option>
+          <option value="rounded">Arredondado</option>
+          <option value="circle">Círculo</option>
+        </select>
+      </label>
+    </details>
+
+    <details class="section" open>
+      <summary>Cores</summary>
+      <div class="color-row">
+        <label class="swatch-field">
+          <input type="color" data-key="bgColor" />
+          <span>Fundo</span>
+        </label>
+      </div>
+      <div class="color-stops" id="colorStops"></div>
+      <div class="row two">
+        <button type="button" class="btn" id="addColorBtn">+ Cor intermediária</button>
+        <button type="button" class="btn" id="reverseBtn">Inverter ordem</button>
+      </div>
+      <div class="palette-strip" id="paletteStrip" title="Paleta final gerada"></div>
+    </details>
+
+    <details class="section" open>
+      <summary>Gradiente</summary>
+      <label class="field">
+        <span>Tipo</span>
+        <select data-key="gradientType">
+          <option value="linear">Linear</option>
+          <option value="radial">Radial</option>
+        </select>
+      </label>
+      <div data-show-if="linear">
+        <label class="field">
+          <span>Direção</span>
+          <select data-key="direction">
+            <option value="0">0° — esquerda → direita</option>
+            <option value="45">45° — diagonal ↘</option>
+            <option value="90">90° — cima → baixo</option>
+            <option value="135">135° — diagonal ↙</option>
+            <option value="180">180° — direita → esquerda</option>
+            <option value="random">Aleatório</option>
+            <option value="custom">Personalizado</option>
+          </select>
+        </label>
+        <label class="field" data-show-if="customAngle">
+          <span>Ângulo <output data-for="angle"></output></span>
+          <input type="range" data-key="angle" min="0" max="359" step="1" />
+        </label>
+        <p class="hint" id="angleHint"></p>
+      </div>
+      <div class="row two" data-show-if="radial">
+        <label class="field">
+          <span>Centro X <output data-for="centerX"></output></span>
+          <input type="range" data-key="centerX" min="0" max="100" step="1" />
+        </label>
+        <label class="field">
+          <span>Centro Y <output data-for="centerY"></output></span>
+          <input type="range" data-key="centerY" min="0" max="100" step="1" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Curva <output data-for="bias"></output></span>
+        <input type="range" data-key="bias" min="-100" max="100" step="1" />
+      </label>
+      <label class="field">
+        <span>Repetições <output data-for="repeat"></output></span>
+        <input type="range" data-key="repeat" min="1" max="8" step="1" />
+      </label>
+    </details>
+
+    <details class="section" open>
+      <summary>Pixelização</summary>
+      <label class="field">
+        <span>Níveis de cor <output data-for="levels"></output></span>
+        <input type="range" data-key="levels" min="0" max="24" step="1" />
+      </label>
+      <div data-show-if="banded">
+        <label class="field">
+          <span>Dithering</span>
+          <select data-key="ditherType">
+            <option value="none">Nenhum (faixas sólidas)</option>
+            <option value="random">Aleatório</option>
+            <option value="bayer2">Ordenado — Bayer 2×2</option>
+            <option value="bayer4">Ordenado — Bayer 4×4</option>
+            <option value="bayer8">Ordenado — Bayer 8×8</option>
+          </select>
+        </label>
+        <label class="field" data-show-if="dither">
+          <span>Intensidade do dithering <output data-for="ditherAmount"></output></span>
+          <input type="range" data-key="ditherAmount" min="0" max="250" step="1" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Granulação <output data-for="grain"></output></span>
+        <input type="range" data-key="grain" min="0" max="100" step="1" />
+      </label>
+      <label class="field">
+        <span>Densidade <output data-for="density"></output></span>
+        <input type="range" data-key="density" min="0" max="100" step="1" />
+      </label>
+    </details>
+
+    <details class="section" open>
+      <summary>Aleatoriedade</summary>
+      <div class="row seed-row">
+        <label class="field">
+          <span>Seed</span>
+          <input type="number" data-key="seed" min="0" max="999999999" step="1" />
+        </label>
+        <button type="button" class="btn" id="newSeedBtn" title="Atalho: barra de espaço">Nova seed</button>
+      </div>
+    </details>
+
+    <details class="section" open>
+      <summary>Exportar</summary>
+      <div class="row two">
+        <button type="button" class="btn btn-accent" id="exportPngBtn">Baixar PNG</button>
+        <button type="button" class="btn btn-accent" id="exportSvgBtn">Baixar SVG</button>
+      </div>
+      <p class="hint" id="exportHint"></p>
+    </details>
+
+    <footer class="sidebar-footer">
+      <button type="button" class="btn btn-ghost" id="resetBtn">Restaurar padrão</button>
+    </footer>
+  </aside>
+
+  <main class="stage">
+    <div class="toolbar">
+      <div class="stats" id="stats"></div>
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-small" id="zoomBtn">Ver em 100%</button>
+      </div>
+    </div>
+    <div class="preview fit" id="preview">
+      <canvas id="canvas"></canvas>
+    </div>
+  </main>
+
+  <script src="js/random.js"></script>
+  <script src="js/palette.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/presets.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
